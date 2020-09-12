@@ -3,6 +3,6 @@ const mimovrsteController = require('../../../controllers/apis/mimovrste');
 
 const router = express.Router();
 
-router.post('/mimovrste/add', mimovrsteController.add);
+router.post('/mimovrste/save', mimovrsteController.save);
 
 module.exports = router;

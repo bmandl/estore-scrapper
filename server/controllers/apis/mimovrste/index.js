@@ -1,11 +1,20 @@
-const mimovrsteServices = require('../../../services/mimovrste');
+const mimovrsteServices = require('../../../services/mimovrste')();
 
-const add = async (req, res) => {
+const save = async (req, res) => {
   const { url } = req.body;
-  const xhrRequest = await mimovrsteServices.getProductXHRrequest(url);
-  const productInfo = await mimovrsteServices.getProductInfo(xhrRequest);
+  try {
+    const result = await mimovrsteServices.saveToDatabase(url);
+    if (result) res.status(200);
+  } catch (error) {
+    console.error(error);
+    res.status(500);
+  }
 
-  res.json(productInfo);
+  return res.redirect('/mimovrste');
 };
 
-module.exports = { add };
+const getProductInfo = async (req, res) => {
+
+};
+
+module.exports = { save, getProductInfo };

@@ -3,8 +3,8 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
 const path = require('path');
-const mongoose = require('mongoose');
 const routes = require('./routes');
+const database = require('./database');
 require('dotenv').config();
 
 module.exports = () => {
@@ -29,12 +29,8 @@ module.exports = () => {
   const start = () => {
     const hostname = server.get('hostname');
     const port = server.get('port');
-    try {
-      mongoose.connect(process.env.DATABASE, { useNewUrlParser: true, useUnifiedTopology: true });
-    } catch (error) {
-      console.error(error);
-    }
-    const db = mongoose.connection;
+    database.connect();
+    const db = database.mongoose.connection;
     db.on('error', console.error.bind(console, 'connection error:'));
     db.once('open', () => {
       server.listen(port, () => {
