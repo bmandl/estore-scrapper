@@ -3,7 +3,9 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
 const path = require('path');
+const mongoose = require('mongoose');
 const routes = require('./routes');
+require('dotenv').config();
 
 module.exports = () => {
   const server = express();
@@ -27,9 +29,17 @@ module.exports = () => {
   const start = () => {
     const hostname = server.get('hostname');
     const port = server.get('port');
-
-    server.listen(port, () => {
-      console.log(`Express server listening on - http://${hostname}:${port}`);
+    try {
+      mongoose.connect(process.env.DATABASE, { useNewUrlParser: true, useUnifiedTopology: true });
+    } catch (error) {
+      console.error(error);
+    }
+    const db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error:'));
+    db.once('open', () => {
+      server.listen(port, () => {
+        console.log(`Express server listening on - http://${hostname}:${port}`);
+      });
     });
   };
   return { create, start };
